@@ -45,4 +45,17 @@
 .buttons {
   display: flex;
   justify-content: space-around;
+  gap: 200px;
+}
+
+.error {
+  color: red;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

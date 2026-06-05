@@ -11,6 +11,7 @@ const choiceId = document.getElementById("city-id-choise");
 const temperture = document.getElementById("temperature");
 const windSpeed = document.getElementById("wind-speed");
 const humidity = document.getElementById("humidity");
+const errorMsg = document.getElementById("error-message");
 
 clearInfo();
 
@@ -41,12 +42,13 @@ async function getWeather() {
 
     const data = await response.json();
 
+    errorMsg.innerHTML = "";
     temperture.innerHTML = `${Math.round(data.main.temp)} °C`;
     windSpeed.innerHTML = `${data.wind.speed} m/s`;
     humidity.innerHTML = `${data.main.humidity}`;
     console.log("City:", data.name, "| ID:", data.id);
   } catch (error) {
-    console.error(error.message);
+    errorMsg.innerHTML = error.message;
   }
 }
 
@@ -62,6 +64,7 @@ function clearInfo() {
   temperture.innerHTML = "";
   windSpeed.innerHTML = "";
   humidity.innerHTML = "";
+  errorMsg.innerHTML = "";
 }
 
 function toggleInputs() {
