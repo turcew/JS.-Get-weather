@@ -12,27 +12,32 @@ const temperture = document.getElementById("temperature");
 const windSpeed = document.getElementById("wind-speed");
 const humidity = document.getElementById("humidity");
 
+clearInfo();
+
 async function getWeather() {
   let url;
-
-  if (choiceCity.checked) {
-    const city = cityName.value.trim();
-    if (!city) {
-      throw new Error("Enter a city name");
-    }
-    url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=en`;
-  } else if (choiceId.checked) {
-    const id = cityId.value.trim();
-    if (!id) {
-      throw new Error("Enter an id");
-    }
-    url = `https://api.openweathermap.org/data/2.5/weather?id=${id}&appid=${API_KEY}&units=metric&lang=en`;
-  } else {
-    throw new Error("Radio buttons are not selected");
-  }
-
   try {
+    if (choiceCity.checked) {
+      const city = cityName.value.trim();
+      if (!city) {
+        throw new Error("Enter a city name");
+      }
+      url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric&lang=en`;
+    } else if (choiceId.checked) {
+      const id = cityId.value.trim();
+      if (!id) {
+        throw new Error("Enter an id");
+      }
+      url = `https://api.openweathermap.org/data/2.5/weather?id=${id}&appid=${API_KEY}&units=metric&lang=en`;
+    } else {
+      throw new Error("Radio buttons are not selected");
+    }
+
     const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Response error");
+    }
 
     const data = await response.json();
 
@@ -41,7 +46,7 @@ async function getWeather() {
     humidity.innerHTML = `${data.main.humidity}`;
     console.log("City:", data.name, "| ID:", data.id);
   } catch (error) {
-    throw new Error(error);
+    console.error(error.message);
   }
 }
 
@@ -49,6 +54,8 @@ function clearInfo() {
   cityName.value = "";
   cityId.value = "";
 
+  cityName.disabled = true;
+  cityId.disabled = true;
   choiceCity.checked = false;
   choiceId.checked = false;
 
@@ -56,6 +63,19 @@ function clearInfo() {
   windSpeed.innerHTML = "";
   humidity.innerHTML = "";
 }
+
+function toggleInputs() {
+  if (choiceCity.checked) {
+    cityName.disabled = false;
+    cityId.disabled = true;
+  } else if (choiceId.checked) {
+    cityName.disabled = true;
+    cityId.disabled = false;
+  }
+}
+
+choiceCity.addEventListener("change", toggleInputs);
+choiceId.addEventListener("change", toggleInputs);
 
 const weatherButton = document.getElementById("weather-button");
 const cancelButton = document.getElementById("cancel-button");
